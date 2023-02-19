@@ -10,11 +10,9 @@ import com.example.de.service.impl.UserServiceImpl;
 import com.example.de.util.FinalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,6 +21,10 @@ public class UserController {
     @Autowired
     UserServiceImpl userService;
 
+    /**
+     * 查询所有的user信息
+     * @return
+     */
     @GetMapping("/getAllUser")
     public JsonResult<List<User>> getAllUser(){
         List<User> userList = userService.queryAllUser();
@@ -30,15 +32,17 @@ public class UserController {
     }
 //   新增和修改
     @RequestMapping("/save")
-    public boolean save(User user){
+    public boolean save(@RequestBody User user){
+        user.setCreateTime(new Date());
         return userService.saveOrUpdate(user);
     }
+
 //    删除
-    @RequestMapping("/delete/{id}")
-    public boolean delete(Integer id){
+    @DeleteMapping("/delete/{id}")
+    public boolean delete(@PathVariable Integer id){
         return userService.removeById(id);
     }
-
+//分页
     @RequestMapping("/page")
     public IPage<User> userPage(@RequestParam Integer pageNum,
                                 @RequestParam Integer pageSize,
